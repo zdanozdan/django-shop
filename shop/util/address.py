@@ -18,8 +18,8 @@ def get_shipping_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            shipping_address = ShippingAddressModel.objects.get(
-                user_shipping=request.user)
+            #shipping_address = ShippingAddressModel.objects.get(user_shipping=request.user)
+            shipping_address = ShippingAddressModel.objects.get(user=request.user)
         except ShippingAddressModel.DoesNotExist:
             shipping_address = None
     else:
@@ -43,8 +43,8 @@ def get_billing_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            billing_address = BillingAddressModel.objects.get(
-                user_billing=request.user)
+            #billing_address = BillingAddressModel.objects.get(user_billing=request.user)
+            billing_address = BillingAddressModel.objects.get(user=request.user)
         except BillingAddressModel.DoesNotExist:
             billing_address = None
     else:
@@ -68,10 +68,12 @@ def assign_address_to_request(request, address, shipping=True):
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged-in user here.
         if shipping:
-            address.user_shipping = request.user
+            #address.user_shipping = request.user
+            address.user = request.user
             address.save()
         else:
-            address.user_billing = request.user
+            address.user = request.user
+            #address.user_billing = request.user
             address.save()
     else:
         # The client is a guest - let's use the session instead.  There has to
